@@ -87,19 +87,27 @@ contract Election{
                 break;
             }
         }
+        winningCandidate();
     }
 
-// Find a winner (In case of equal vote, the person with lesser id wins [NTA jindabaad :)])
-    function winningCandidate() public view returns (string memory name){
+// Find a winner or list many in case of multiple winners
+    string [] public  winner_name;
+    uint public num_winners = 0;
+    function winningCandidate() private {
         uint highest_votes = 0;
-        string memory winner_name = "";
         for(uint i=0 ; i < participating_candidates.length ; i++){
             if(participating_candidates[i].votes > highest_votes){
+                winner_name = new string[](0);
+                num_winners = 0;
                 highest_votes = participating_candidates[i].votes;
-                winner_name = participating_candidates[i].name;
+                winner_name.push(participating_candidates[i].name);
+                num_winners++;
+            }
+            else if(participating_candidates[i].votes == highest_votes){
+                winner_name.push(participating_candidates[i].name);
+                num_winners++;
             }
         }
-        return winner_name;
     }
 
     event voteCasted(string voter_name, uint voter_ID);
